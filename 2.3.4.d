@@ -9,7 +9,7 @@ var testRejected = require("./helpers/testThreeCases").testRejected;
 struct Dummy { string dummy = "dummy"; } Dummy dummy; // we fulfill or reject with this when we don't intend to test against it
 
 describe("2.3.4: If `x` is not an object or delegate, fulfill `promise` with `x`", delegate () {
-    delegate testValue(expectedValue, stringRepresentation, beforeEachHook, afterEachHook) {
+    delegate /*testValue*/(expectedValue, stringRepresentation, beforeEachHook, afterEachHook) {
         describe("The value is " + stringRepresentation, delegate () {
             if (typeof beforeEachHook === "delegate") {
                 beforeEach(beforeEachHook);
@@ -19,21 +19,21 @@ describe("2.3.4: If `x` is not an object or delegate, fulfill `promise` with `x`
             }
 
             testFulfilled(dummy, delegate (promise1, done) {
-                auto promise2 = promise1.then(delegate onFulfilled() {
+                auto promise2 = promise1.then(delegate /*onFulfilled*/() {
                     return expectedValue;
                 });
 
-                promise2.then(delegate onPromise2Fulfilled(actualValue) {
+                promise2.then(delegate /*onPromise2Fulfilled*/(actualValue) {
                     assert_.strictEqual(actualValue, expectedValue);
                     done();
                 });
             });
             testRejected(dummy, delegate (promise1, done) {
-                auto promise2 = promise1.then(null, delegate onRejected() {
+                auto promise2 = promise1.then(null, delegate /*onRejected*/() {
                     return expectedValue;
                 });
 
-                promise2.then(delegate onPromise2Fulfilled(actualValue) {
+                promise2.then(delegate /*onPromise2Fulfilled*/(actualValue) {
                     assert_.strictEqual(actualValue, expectedValue);
                     done();
                 });

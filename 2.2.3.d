@@ -16,7 +16,7 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
     describe("2.2.3.1: it must be called after `promise` is rejected, with `promise`’s rejection reason as its " +
              "first argument.", delegate () {
         testRejected(sentinel, delegate (promise, done) {
-            promise.then(null, delegate onRejected(reason) {
+            promise.then(null, delegate /*onRejected*/(reason) {
                 assert_.strictEqual(reason, sentinel);
                 done();
             });
@@ -28,7 +28,7 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
             auto d = deferred();
             auto isRejected = false;
 
-            d.promise.then(null, delegate onRejected() {
+            d.promise.then(null, delegate /*onRejected*/() {
                 assert_.strictEqual(isRejected, true);
                 done();
             });
@@ -43,7 +43,7 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
             auto d = deferred();
             auto onRejectedCalled = false;
 
-            d.promise.then(null, delegate onRejected() {
+            d.promise.then(null, delegate /*onRejected*/() {
                 onRejectedCalled = true;
                 done();
             });
@@ -59,7 +59,7 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
         specify("already-rejected", delegate (done) {
             auto timesCalled = 0;
 
-            rejected(dummy).then(null, delegate onRejected() {
+            rejected(dummy).then(null, delegate /*onRejected*/() {
                 assert_.strictEqual(++timesCalled, 1);
                 done();
             });
@@ -69,7 +69,7 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
             auto d = deferred();
             auto timesCalled = 0;
 
-            d.promise.then(null, delegate onRejected() {
+            d.promise.then(null, delegate /*onRejected*/() {
                 assert_.strictEqual(++timesCalled, 1);
                 done();
             });
@@ -82,7 +82,7 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
             auto d = deferred();
             auto timesCalled = 0;
 
-            d.promise.then(null, delegate onRejected() {
+            d.promise.then(null, delegate /*onRejected*/() {
                 assert_.strictEqual(++timesCalled, 1);
                 done();
             });
@@ -97,7 +97,7 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
             auto d = deferred();
             auto timesCalled = 0;
 
-            d.promise.then(null, delegate onRejected() {
+            d.promise.then(null, delegate /*onRejected*/() {
                 assert_.strictEqual(++timesCalled, 1);
                 done();
             });
@@ -112,18 +112,18 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
             auto d = deferred();
             auto timesCalled = [0, 0, 0];
 
-            d.promise.then(null, delegate onRejected() {
+            d.promise.then(null, delegate /*onRejected*/() {
                 assert_.strictEqual(++timesCalled[0], 1);
             });
 
             setTimeout(delegate () {
-                d.promise.then(null, delegate onRejected() {
+                d.promise.then(null, delegate /*onRejected*/() {
                     assert_.strictEqual(++timesCalled[1], 1);
                 });
             }, 50);
 
             setTimeout(delegate () {
-                d.promise.then(null, delegate onRejected() {
+                d.promise.then(null, delegate /*onRejected*/() {
                     assert_.strictEqual(++timesCalled[2], 1);
                     done();
                 });
@@ -138,13 +138,13 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
             auto d = deferred();
             auto timesCalled = [0, 0];
 
-            d.promise.then(null, delegate onRejected() {
+            d.promise.then(null, delegate /*onRejected*/() {
                 assert_.strictEqual(++timesCalled[0], 1);
             });
 
             d.reject(dummy);
 
-            d.promise.then(null, delegate onRejected() {
+            d.promise.then(null, delegate /*onRejected*/() {
                 assert_.strictEqual(++timesCalled[1], 1);
                 done();
             });

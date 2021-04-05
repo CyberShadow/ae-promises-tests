@@ -14,9 +14,9 @@ describe("2.1.2.1: When fulfilled, a promise: must not transition to any other s
     testFulfilled(dummy, (Promise!Dummy promise, void delegate() done) {
         auto onFulfilledCalled = false;
 
-        promise.then(delegate onFulfilled() {
+        promise.then(delegate /*onFulfilled*/() {
             onFulfilledCalled = true;
-        }, delegate onRejected() {
+        }, delegate /*onRejected*/() {
             assert_.strictEqual(onFulfilledCalled, false);
             done();
         });
@@ -28,9 +28,9 @@ describe("2.1.2.1: When fulfilled, a promise: must not transition to any other s
         auto d = deferred();
         auto onFulfilledCalled = false;
 
-        d.promise.then(delegate onFulfilled() {
+        d.promise.then(delegate /*onFulfilled*/() {
             onFulfilledCalled = true;
-        }, delegate onRejected() {
+        }, delegate /*onRejected*/() {
             assert_.strictEqual(onFulfilledCalled, false);
             done();
         });
@@ -44,9 +44,9 @@ describe("2.1.2.1: When fulfilled, a promise: must not transition to any other s
         auto d = deferred();
         auto onFulfilledCalled = false;
 
-        d.promise.then(delegate onFulfilled() {
+        d.promise.then(delegate /*onFulfilled*/() {
             onFulfilledCalled = true;
-        }, delegate onRejected() {
+        }, delegate /*onRejected*/() {
             assert_.strictEqual(onFulfilledCalled, false);
             done();
         });
@@ -62,9 +62,9 @@ describe("2.1.2.1: When fulfilled, a promise: must not transition to any other s
         auto d = deferred();
         auto onFulfilledCalled = false;
 
-        d.promise.then(delegate onFulfilled() {
+        d.promise.then(delegate /*onFulfilled*/() {
             onFulfilledCalled = true;
-        }, delegate onRejected() {
+        }, delegate /*onRejected*/() {
             assert_.strictEqual(onFulfilledCalled, false);
             done();
         });

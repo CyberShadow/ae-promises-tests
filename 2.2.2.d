@@ -16,7 +16,7 @@ describe("2.2.2: If `onFulfilled` is a delegate,", delegate () {
     describe("2.2.2.1: it must be called after `promise` is fulfilled, with `promise`’s fulfillment value as its " +
              "first argument.", delegate () {
         testFulfilled(sentinel, delegate (promise, done) {
-            promise.then(delegate onFulfilled(value) {
+            promise.then(delegate /*onFulfilled*/(value) {
                 assert_.strictEqual(value, sentinel);
                 done();
             });
@@ -28,7 +28,7 @@ describe("2.2.2: If `onFulfilled` is a delegate,", delegate () {
             auto d = deferred();
             auto isFulfilled = false;
 
-            d.promise.then(delegate onFulfilled() {
+            d.promise.then(delegate /*onFulfilled*/() {
                 assert_.strictEqual(isFulfilled, true);
                 done();
             });
@@ -43,7 +43,7 @@ describe("2.2.2: If `onFulfilled` is a delegate,", delegate () {
             auto d = deferred();
             auto onFulfilledCalled = false;
 
-            d.promise.then(delegate onFulfilled() {
+            d.promise.then(delegate /*onFulfilled*/() {
                 onFulfilledCalled = true;
                 done();
             });
@@ -59,7 +59,7 @@ describe("2.2.2: If `onFulfilled` is a delegate,", delegate () {
         specify("already-fulfilled", delegate (done) {
             auto timesCalled = 0;
 
-            resolved(dummy).then(delegate onFulfilled() {
+            resolved(dummy).then(delegate /*onFulfilled*/() {
                 assert_.strictEqual(++timesCalled, 1);
                 done();
             });
@@ -69,7 +69,7 @@ describe("2.2.2: If `onFulfilled` is a delegate,", delegate () {
             auto d = deferred();
             auto timesCalled = 0;
 
-            d.promise.then(delegate onFulfilled() {
+            d.promise.then(delegate /*onFulfilled*/() {
                 assert_.strictEqual(++timesCalled, 1);
                 done();
             });
@@ -82,7 +82,7 @@ describe("2.2.2: If `onFulfilled` is a delegate,", delegate () {
             auto d = deferred();
             auto timesCalled = 0;
 
-            d.promise.then(delegate onFulfilled() {
+            d.promise.then(delegate /*onFulfilled*/() {
                 assert_.strictEqual(++timesCalled, 1);
                 done();
             });
@@ -97,7 +97,7 @@ describe("2.2.2: If `onFulfilled` is a delegate,", delegate () {
             auto d = deferred();
             auto timesCalled = 0;
 
-            d.promise.then(delegate onFulfilled() {
+            d.promise.then(delegate /*onFulfilled*/() {
                 assert_.strictEqual(++timesCalled, 1);
                 done();
             });
@@ -112,18 +112,18 @@ describe("2.2.2: If `onFulfilled` is a delegate,", delegate () {
             auto d = deferred();
             auto timesCalled = [0, 0, 0];
 
-            d.promise.then(delegate onFulfilled() {
+            d.promise.then(delegate /*onFulfilled*/() {
                 assert_.strictEqual(++timesCalled[0], 1);
             });
 
             setTimeout(delegate () {
-                d.promise.then(delegate onFulfilled() {
+                d.promise.then(delegate /*onFulfilled*/() {
                     assert_.strictEqual(++timesCalled[1], 1);
                 });
             }, 50);
 
             setTimeout(delegate () {
-                d.promise.then(delegate onFulfilled() {
+                d.promise.then(delegate /*onFulfilled*/() {
                     assert_.strictEqual(++timesCalled[2], 1);
                     done();
                 });
@@ -138,13 +138,13 @@ describe("2.2.2: If `onFulfilled` is a delegate,", delegate () {
             auto d = deferred();
             auto timesCalled = [0, 0];
 
-            d.promise.then(delegate onFulfilled() {
+            d.promise.then(delegate /*onFulfilled*/() {
                 assert_.strictEqual(++timesCalled[0], 1);
             });
 
             d.resolve(dummy);
 
-            d.promise.then(delegate onFulfilled() {
+            d.promise.then(delegate /*onFulfilled*/() {
                 assert_.strictEqual(++timesCalled[1], 1);
                 done();
             });

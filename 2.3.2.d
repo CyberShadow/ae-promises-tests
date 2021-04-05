@@ -12,9 +12,9 @@ alias deferred = adapter.deferred;
 struct Dummy { string dummy = "dummy"; } Dummy dummy; // we fulfill or reject with this when we don't intend to test against it
 var sentinel = { sentinel: "sentinel" }; // a sentinel fulfillment value to test for with strict equality
 
-delegate testPromiseResolution(xFactory, test) {
+delegate /*testPromiseResolution*/(xFactory, test) {
     specify("via return from a fulfilled promise", delegate (done) {
-        auto promise = resolved(dummy).then(delegate onBasePromiseFulfilled() {
+        auto promise = resolved(dummy).then(delegate /*onBasePromiseFulfilled*/() {
             return xFactory();
         });
 
@@ -22,7 +22,7 @@ delegate testPromiseResolution(xFactory, test) {
     });
 
     specify("via return from a rejected promise", delegate (done) {
-        auto promise = rejected(dummy).then(null, delegate onBasePromiseRejected() {
+        auto promise = rejected(dummy).then(null, delegate /*onBasePromiseRejected*/() {
             return xFactory();
         });
 
@@ -33,7 +33,7 @@ delegate testPromiseResolution(xFactory, test) {
 describe("2.3.2: If `x` is a promise, adopt its state", delegate () {
     describe("2.3.2.1: If `x` is pending, `promise` must remain pending until `x` is fulfilled or rejected.",
              delegate () {
-        delegate xFactory() {
+        delegate /*xFactory*/() {
             return deferred().promise;
         }
 
@@ -42,10 +42,10 @@ describe("2.3.2: If `x` is a promise, adopt its state", delegate () {
             auto wasRejected = false;
 
             promise.then(
-                delegate onPromiseFulfilled() {
+                delegate /*onPromiseFulfilled*/() {
                     wasFulfilled = true;
                 },
-                delegate onPromiseRejected() {
+                delegate /*onPromiseRejected*/() {
                     wasRejected = true;
                 }
             );
@@ -60,12 +60,12 @@ describe("2.3.2: If `x` is a promise, adopt its state", delegate () {
 
     describe("2.3.2.2: If/when `x` is fulfilled, fulfill `promise` with the same value.", delegate () {
         describe("`x` is already-fulfilled", delegate () {
-            delegate xFactory() {
+            delegate /*xFactory*/() {
                 return resolved(sentinel);
             }
 
             testPromiseResolution(xFactory, delegate (promise, done) {
-                promise.then(delegate onPromiseFulfilled(value) {
+                promise.then(delegate /*onPromiseFulfilled*/(value) {
                     assert_.strictEqual(value, sentinel);
                     done();
                 });
@@ -75,7 +75,7 @@ describe("2.3.2: If `x` is a promise, adopt its state", delegate () {
         describe("`x` is eventually-fulfilled", delegate () {
             auto d = null;
 
-            delegate xFactory() {
+            delegate /*xFactory*/() {
                 d = deferred();
                 setTimeout(delegate () {
                     d.resolve(sentinel);
@@ -84,7 +84,7 @@ describe("2.3.2: If `x` is a promise, adopt its state", delegate () {
             }
 
             testPromiseResolution(xFactory, delegate (promise, done) {
-                promise.then(delegate onPromiseFulfilled(value) {
+                promise.then(delegate /*onPromiseFulfilled*/(value) {
                     assert_.strictEqual(value, sentinel);
                     done();
                 });
@@ -94,12 +94,12 @@ describe("2.3.2: If `x` is a promise, adopt its state", delegate () {
 
     describe("2.3.2.3: If/when `x` is rejected, reject `promise` with the same reason.", delegate () {
         describe("`x` is already-rejected", delegate () {
-            delegate xFactory() {
+            delegate /*xFactory*/() {
                 return rejected(sentinel);
             }
 
             testPromiseResolution(xFactory, delegate (promise, done) {
-                promise.then(null, delegate onPromiseRejected(reason) {
+                promise.then(null, delegate /*onPromiseRejected*/(reason) {
                     assert_.strictEqual(reason, sentinel);
                     done();
                 });
@@ -109,7 +109,7 @@ describe("2.3.2: If `x` is a promise, adopt its state", delegate () {
         describe("`x` is eventually-rejected", delegate () {
             auto d = null;
 
-            delegate xFactory() {
+            delegate /*xFactory*/() {
                 d = deferred();
                 setTimeout(delegate () {
                     d.reject(sentinel);
@@ -118,7 +118,7 @@ describe("2.3.2: If `x` is a promise, adopt its state", delegate () {
             }
 
             testPromiseResolution(xFactory, delegate (promise, done) {
-                promise.then(null, delegate onPromiseRejected(reason) {
+                promise.then(null, delegate /*onPromiseRejected*/(reason) {
                     assert_.strictEqual(reason, sentinel);
                     done();
                 });

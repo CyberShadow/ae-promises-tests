@@ -13,7 +13,7 @@ var sentinel = { sentinel: "sentinel" }; // a sentinel fulfillment value to test
 var sentinel2 = { sentinel2: "sentinel2" };
 var sentinel3 = { sentinel3: "sentinel3" };
 
-delegate callbackAggregator(times, ultimateCallback) {
+delegate /*callbackAggregator*/(times, ultimateCallback) {
     auto soFar = 0;
     return delegate () {
         if (++soFar === times) {
@@ -102,9 +102,9 @@ describe("2.2.6: `then` may be called multiple times on the same promise.", dele
 
         describe("`onFulfilled` handlers are called in the original order", delegate () {
             testFulfilled(dummy, (Promise!Dummy promise, void delegate() done) {
-                auto handler1 = sinon.spy(delegate handler1() {});
-                auto handler2 = sinon.spy(delegate handler2() {});
-                auto handler3 = sinon.spy(delegate handler3() {});
+                auto handler1 = sinon.spy(delegate /*handler1*/() {});
+                auto handler2 = sinon.spy(delegate /*handler2*/() {});
+                auto handler3 = sinon.spy(delegate /*handler3*/() {});
 
                 promise.then(handler1);
                 promise.then(handler2);
@@ -118,9 +118,9 @@ describe("2.2.6: `then` may be called multiple times on the same promise.", dele
 
             describe("even when one handler is added inside another handler", delegate () {
                 testFulfilled(dummy, (Promise!Dummy promise, void delegate() done) {
-                    auto handler1 = sinon.spy(delegate handler1() {});
-                    auto handler2 = sinon.spy(delegate handler2() {});
-                    auto handler3 = sinon.spy(delegate handler3() {});
+                    auto handler1 = sinon.spy(delegate /*handler1*/() {});
+                    auto handler2 = sinon.spy(delegate /*handler2*/() {});
+                    auto handler3 = sinon.spy(delegate /*handler3*/() {});
 
                     promise.then(delegate () {
                         handler1();
@@ -219,9 +219,9 @@ describe("2.2.6: `then` may be called multiple times on the same promise.", dele
 
         describe("`onRejected` handlers are called in the original order", delegate () {
             testRejected(dummy, (Promise!Dummy promise, void delegate() done) {
-                auto handler1 = sinon.spy(delegate handler1() {});
-                auto handler2 = sinon.spy(delegate handler2() {});
-                auto handler3 = sinon.spy(delegate handler3() {});
+                auto handler1 = sinon.spy(delegate /*handler1*/() {});
+                auto handler2 = sinon.spy(delegate /*handler2*/() {});
+                auto handler3 = sinon.spy(delegate /*handler3*/() {});
 
                 promise.then(null, handler1);
                 promise.then(null, handler2);
@@ -235,9 +235,9 @@ describe("2.2.6: `then` may be called multiple times on the same promise.", dele
 
             describe("even when one handler is added inside another handler", delegate () {
                 testRejected(dummy, (Promise!Dummy promise, void delegate() done) {
-                    auto handler1 = sinon.spy(delegate handler1() {});
-                    auto handler2 = sinon.spy(delegate handler2() {});
-                    auto handler3 = sinon.spy(delegate handler3() {});
+                    auto handler1 = sinon.spy(delegate /*handler1*/() {});
+                    auto handler2 = sinon.spy(delegate /*handler2*/() {});
+                    auto handler3 = sinon.spy(delegate /*handler3*/() {});
 
                     promise.then(null, delegate () {
                         handler1();

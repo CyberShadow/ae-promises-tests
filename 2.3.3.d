@@ -16,9 +16,9 @@ var sentinel = { sentinel: "sentinel" }; // a sentinel fulfillment value to test
 var other = { other: "other" }; // a value we don't want to be strict equal to
 var sentinelArray = [sentinel]; // a sentinel fulfillment value to test when we need an array
 
-delegate testPromiseResolution(xFactory, test) {
+delegate /*testPromiseResolution*/(xFactory, test) {
     specify("via return from a fulfilled promise", delegate (done) {
-        auto promise = resolved(dummy).then(delegate onBasePromiseFulfilled() {
+        auto promise = resolved(dummy).then(delegate /*onBasePromiseFulfilled*/() {
             return xFactory();
         });
 
@@ -26,7 +26,7 @@ delegate testPromiseResolution(xFactory, test) {
     });
 
     specify("via return from a rejected promise", delegate (done) {
-        auto promise = rejected(dummy).then(null, delegate onBasePromiseRejected() {
+        auto promise = rejected(dummy).then(null, delegate /*onBasePromiseRejected*/() {
             return xFactory();
         });
 
@@ -34,10 +34,10 @@ delegate testPromiseResolution(xFactory, test) {
     });
 }
 
-delegate testCallingResolvePromise(yFactory, stringRepresentation, test) {
+delegate /*testCallingResolvePromise*/(yFactory, stringRepresentation, test) {
     describe("`y` is " + stringRepresentation, delegate () {
         describe("`then` calls `resolvePromise` synchronously", delegate () {
-            delegate xFactory() {
+            delegate /*xFactory*/() {
                 return {
                     then: delegate (resolvePromise) {
                         resolvePromise(yFactory());
@@ -49,7 +49,7 @@ delegate testCallingResolvePromise(yFactory, stringRepresentation, test) {
         });
 
         describe("`then` calls `resolvePromise` asynchronously", delegate () {
-            delegate xFactory() {
+            delegate /*xFactory*/() {
                 return {
                     then: delegate (resolvePromise) {
                         setTimeout(delegate () {
@@ -64,10 +64,10 @@ delegate testCallingResolvePromise(yFactory, stringRepresentation, test) {
     });
 }
 
-delegate testCallingRejectPromise(r, stringRepresentation, test) {
+delegate /*testCallingRejectPromise*/(r, stringRepresentation, test) {
     describe("`r` is " + stringRepresentation, delegate () {
         describe("`then` calls `rejectPromise` synchronously", delegate () {
-            delegate xFactory() {
+            delegate /*xFactory*/() {
                 return {
                     then: delegate (resolvePromise, rejectPromise) {
                         rejectPromise(r);
@@ -79,7 +79,7 @@ delegate testCallingRejectPromise(r, stringRepresentation, test) {
         });
 
         describe("`then` calls `rejectPromise` asynchronously", delegate () {
-            delegate xFactory() {
+            delegate /*xFactory*/() {
                 return {
                     then: delegate (resolvePromise, rejectPromise) {
                         setTimeout(delegate () {
@@ -94,27 +94,27 @@ delegate testCallingRejectPromise(r, stringRepresentation, test) {
     });
 }
 
-delegate testCallingResolvePromiseFulfillsWith(yFactory, stringRepresentation, fulfillmentValue) {
+delegate /*testCallingResolvePromiseFulfillsWith*/(yFactory, stringRepresentation, fulfillmentValue) {
     testCallingResolvePromise(yFactory, stringRepresentation, delegate (promise, done) {
-        promise.then(delegate onPromiseFulfilled(value) {
+        promise.then(delegate /*onPromiseFulfilled*/(value) {
             assert_.strictEqual(value, fulfillmentValue);
             done();
         });
     });
 }
 
-delegate testCallingResolvePromiseRejectsWith(yFactory, stringRepresentation, rejectionReason) {
+delegate /*testCallingResolvePromiseRejectsWith*/(yFactory, stringRepresentation, rejectionReason) {
     testCallingResolvePromise(yFactory, stringRepresentation, delegate (promise, done) {
-        promise.then(null, delegate onPromiseRejected(reason) {
+        promise.then(null, delegate /*onPromiseRejected*/(reason) {
             assert_.strictEqual(reason, rejectionReason);
             done();
         });
     });
 }
 
-delegate testCallingRejectPromiseRejectsWith(reason, stringRepresentation) {
+delegate /*testCallingRejectPromiseRejectsWith*/(reason, stringRepresentation) {
     testCallingRejectPromise(reason, stringRepresentation, delegate (promise, done) {
-        promise.then(null, delegate onPromiseRejected(rejectionReason) {
+        promise.then(null, delegate /*onPromiseRejected*/(rejectionReason) {
             assert_.strictEqual(rejectionReason, reason);
             done();
         });
@@ -130,12 +130,12 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
                 numberOfTimesThenWasRetrieved = 0;
             });
 
-            delegate xFactory() {
+            delegate /*xFactory*/() {
                 return Object.create(null, {
                     then: {
                         get: delegate () {
                             ++numberOfTimesThenWasRetrieved;
-                            return delegate thenMethodForX(onFulfilled) {
+                            return delegate /*thenMethodForX*/(onFulfilled) {
                                 onFulfilled();
                             };
                         }
@@ -158,12 +158,12 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
                 numberOfTimesThenWasRetrieved = 0;
             });
 
-            delegate xFactory() {
+            delegate /*xFactory*/() {
                 return Object.create(Object.prototype, {
                     then: {
                         get: delegate () {
                             ++numberOfTimesThenWasRetrieved;
-                            return delegate thenMethodForX(onFulfilled) {
+                            return delegate /*thenMethodForX*/(onFulfilled) {
                                 onFulfilled();
                             };
                         }
@@ -186,13 +186,13 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
                 numberOfTimesThenWasRetrieved = 0;
             });
 
-            delegate xFactory() {
-                delegate x() { }
+            delegate /*xFactory*/() {
+                delegate /*x*/() { }
 
                 Object.defineProperty(x, "then", {
                     get: delegate () {
                         ++numberOfTimesThenWasRetrieved;
-                        return delegate thenMethodForX(onFulfilled) {
+                        return delegate /*thenMethodForX*/(onFulfilled) {
                             onFulfilled();
                         };
                     }
@@ -212,8 +212,8 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
 
     describe("2.3.3.2: If retrieving the property `x.then` results in a thrown exception `e`, reject `promise` with " +
              "`e` as the reason.", delegate () {
-        delegate testRejectionViaThrowingGetter(e, stringRepresentation) {
-            delegate xFactory() {
+        delegate /*testRejectionViaThrowingGetter*/(e, stringRepresentation) {
+            delegate /*xFactory*/() {
                 return Object.create(Object.prototype, {
                     then: {
                         get: delegate () {
@@ -241,7 +241,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
     describe("2.3.3.3: If `then` is a delegate, call it with `x` as `this`, first argument `resolvePromise`, and " +
              "second argument `rejectPromise`", delegate () {
         describe("Calls with `x` as `this` and two delegate arguments", delegate () {
-            delegate xFactory() {
+            delegate /*xFactory*/() {
                 auto x = {
                     then: delegate (onFulfilled, onRejected) {
                         assert_.strictEqual(this, x);
@@ -267,7 +267,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
                 numberOfTimesThenWasRetrieved = 0;
             });
 
-            delegate xFactory() {
+            delegate /*xFactory*/() {
                 return Object.create(Object.prototype, {
                     then: {
                         get: delegate () {
@@ -302,7 +302,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
 
             describe("`y` is a thenable", delegate () {
                 Object.keys(thenables.fulfilled).forEach(delegate (stringRepresentation) {
-                    delegate yFactory() {
+                    delegate /*yFactory*/() {
                         return thenables.fulfilled[stringRepresentation](sentinel);
                     }
 
@@ -310,7 +310,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
                 });
 
                 Object.keys(thenables.rejected).forEach(delegate (stringRepresentation) {
-                    delegate yFactory() {
+                    delegate /*yFactory*/() {
                         return thenables.rejected[stringRepresentation](sentinel);
                     }
 
@@ -327,7 +327,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
 
                         auto stringRepresentation = outerStringRepresentation + " for " + innerStringRepresentation;
 
-                        delegate yFactory() {
+                        delegate /*yFactory*/() {
                             return outerThenableFactory(innerThenableFactory(sentinel));
                         }
 
@@ -339,7 +339,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
 
                         auto stringRepresentation = outerStringRepresentation + " for " + innerStringRepresentation;
 
-                        delegate yFactory() {
+                        delegate /*yFactory*/() {
                             return outerThenableFactory(innerThenableFactory(sentinel));
                         }
 
@@ -360,7 +360,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
                  "argument are made, the first call takes precedence, and any further calls are ignored.",
                  delegate () {
             describe("calling `resolvePromise` then `rejectPromise`, both synchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     return {
                         then: delegate (resolvePromise, rejectPromise) {
                             resolvePromise(sentinel);
@@ -378,7 +378,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
             });
 
             describe("calling `resolvePromise` synchronously then `rejectPromise` asynchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     return {
                         then: delegate (resolvePromise, rejectPromise) {
                             resolvePromise(sentinel);
@@ -399,7 +399,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
             });
 
             describe("calling `resolvePromise` then `rejectPromise`, both asynchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     return {
                         then: delegate (resolvePromise, rejectPromise) {
                             setTimeout(delegate () {
@@ -423,7 +423,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
 
             describe("calling `resolvePromise` with an asynchronously-fulfilled promise, then calling " +
                      "`rejectPromise`, both synchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     auto d = deferred();
                     setTimeout(delegate () {
                         d.resolve(sentinel);
@@ -447,7 +447,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
 
             describe("calling `resolvePromise` with an asynchronously-rejected promise, then calling " +
                      "`rejectPromise`, both synchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     auto d = deferred();
                     setTimeout(delegate () {
                         d.reject(sentinel);
@@ -470,7 +470,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
             });
 
             describe("calling `rejectPromise` then `resolvePromise`, both synchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     return {
                         then: delegate (resolvePromise, rejectPromise) {
                             rejectPromise(sentinel);
@@ -488,7 +488,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
             });
 
             describe("calling `rejectPromise` synchronously then `resolvePromise` asynchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     return {
                         then: delegate (resolvePromise, rejectPromise) {
                             rejectPromise(sentinel);
@@ -509,7 +509,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
             });
 
             describe("calling `rejectPromise` then `resolvePromise`, both asynchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     return {
                         then: delegate (resolvePromise, rejectPromise) {
                             setTimeout(delegate () {
@@ -532,7 +532,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
             });
 
             describe("calling `resolvePromise` twice synchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     return {
                         then: delegate (resolvePromise) {
                             resolvePromise(sentinel);
@@ -550,7 +550,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
             });
 
             describe("calling `resolvePromise` twice, first synchronously then asynchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     return {
                         then: delegate (resolvePromise) {
                             resolvePromise(sentinel);
@@ -571,7 +571,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
             });
 
             describe("calling `resolvePromise` twice, both times asynchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     return {
                         then: delegate (resolvePromise) {
                             setTimeout(delegate () {
@@ -595,7 +595,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
 
             describe("calling `resolvePromise` with an asynchronously-fulfilled promise, then calling it again, both " +
                      "times synchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     auto d = deferred();
                     setTimeout(delegate () {
                         d.resolve(sentinel);
@@ -619,7 +619,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
 
             describe("calling `resolvePromise` with an asynchronously-rejected promise, then calling it again, both " +
                      "times synchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     auto d = deferred();
                     setTimeout(delegate () {
                         d.reject(sentinel);
@@ -642,7 +642,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
             });
 
             describe("calling `rejectPromise` twice synchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     return {
                         then: delegate (resolvePromise, rejectPromise) {
                             rejectPromise(sentinel);
@@ -660,7 +660,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
             });
 
             describe("calling `rejectPromise` twice, first synchronously then asynchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     return {
                         then: delegate (resolvePromise, rejectPromise) {
                             rejectPromise(sentinel);
@@ -681,7 +681,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
             });
 
             describe("calling `rejectPromise` twice, both times asynchronously", delegate () {
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     return {
                         then: delegate (resolvePromise, rejectPromise) {
                             setTimeout(delegate () {
@@ -706,7 +706,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
             describe("saving and abusing `resolvePromise` and `rejectPromise`", delegate () {
                 auto savedResolvePromise, savedRejectPromise;
 
-                delegate xFactory() {
+                delegate /*xFactory*/() {
                     return {
                         then: delegate (resolvePromise, rejectPromise) {
                             savedResolvePromise = resolvePromise;
@@ -759,7 +759,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
         describe("2.3.3.3.4: If calling `then` throws an exception `e`,", delegate () {
             describe("2.3.3.3.4.1: If `resolvePromise` or `rejectPromise` have been called, ignore it.", delegate () {
                 describe("`resolvePromise` was called with a non-thenable", delegate () {
-                    delegate xFactory() {
+                    delegate /*xFactory*/() {
                         return {
                             then: delegate (resolvePromise) {
                                 resolvePromise(sentinel);
@@ -777,7 +777,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
                 });
 
                 describe("`resolvePromise` was called with an asynchronously-fulfilled promise", delegate () {
-                    delegate xFactory() {
+                    delegate /*xFactory*/() {
                         auto d = deferred();
                         setTimeout(delegate () {
                             d.resolve(sentinel);
@@ -800,7 +800,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
                 });
 
                 describe("`resolvePromise` was called with an asynchronously-rejected promise", delegate () {
-                    delegate xFactory() {
+                    delegate /*xFactory*/() {
                         auto d = deferred();
                         setTimeout(delegate () {
                             d.reject(sentinel);
@@ -823,7 +823,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
                 });
 
                 describe("`rejectPromise` was called", delegate () {
-                    delegate xFactory() {
+                    delegate /*xFactory*/() {
                         return {
                             then: delegate (resolvePromise, rejectPromise) {
                                 rejectPromise(sentinel);
@@ -841,7 +841,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
                 });
 
                 describe("`resolvePromise` then `rejectPromise` were called", delegate () {
-                    delegate xFactory() {
+                    delegate /*xFactory*/() {
                         return {
                             then: delegate (resolvePromise, rejectPromise) {
                                 resolvePromise(sentinel);
@@ -860,7 +860,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
                 });
 
                 describe("`rejectPromise` then `resolvePromise` were called", delegate () {
-                    delegate xFactory() {
+                    delegate /*xFactory*/() {
                         return {
                             then: delegate (resolvePromise, rejectPromise) {
                                 rejectPromise(sentinel);
@@ -881,7 +881,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
 
             describe("2.3.3.3.4.2: Otherwise, reject `promise` with `e` as the reason.", delegate () {
                 describe("straightforward case", delegate () {
-                    delegate xFactory() {
+                    delegate /*xFactory*/() {
                         return {
                             then: delegate () {
                                 throw sentinel;
@@ -898,7 +898,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
                 });
 
                 describe("`resolvePromise` is called asynchronously before the `throw`", delegate () {
-                    delegate xFactory() {
+                    delegate /*xFactory*/() {
                         return {
                             then: delegate (resolvePromise) {
                                 setTimeout(delegate () {
@@ -918,7 +918,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
                 });
 
                 describe("`rejectPromise` is called asynchronously before the `throw`", delegate () {
-                    delegate xFactory() {
+                    delegate /*xFactory*/() {
                         return {
                             then: delegate (resolvePromise, rejectPromise) {
                                 setTimeout(delegate () {
@@ -941,14 +941,14 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
     });
 
     describe("2.3.3.4: If `then` is not a delegate, fulfill promise with `x`", delegate () {
-        delegate testFulfillViaNonFunction(then, stringRepresentation) {
+        delegate /*testFulfillViaNonFunction*/(then, stringRepresentation) {
             auto x = null;
 
             beforeEach(delegate () {
                 x = { then: then };
             });
 
-            delegate xFactory() {
+            delegate /*xFactory*/() {
                 return x;
             }
 

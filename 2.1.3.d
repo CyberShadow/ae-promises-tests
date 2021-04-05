@@ -14,10 +14,10 @@ describe("2.1.3.1: When rejected, a promise: must not transition to any other st
     testRejected(dummy, (Promise!Dummy promise, void delegate() done) {
         auto onRejectedCalled = false;
 
-        promise.then(delegate onFulfilled() {
+        promise.then(delegate /*onFulfilled*/() {
             assert_.strictEqual(onRejectedCalled, false);
             done();
-        }, delegate onRejected() {
+        }, delegate /*onRejected*/() {
             onRejectedCalled = true;
         });
 
@@ -28,10 +28,10 @@ describe("2.1.3.1: When rejected, a promise: must not transition to any other st
         auto d = deferred();
         auto onRejectedCalled = false;
 
-        d.promise.then(delegate onFulfilled() {
+        d.promise.then(delegate /*onFulfilled*/() {
             assert_.strictEqual(onRejectedCalled, false);
             done();
-        }, delegate onRejected() {
+        }, delegate /*onRejected*/() {
             onRejectedCalled = true;
         });
 
@@ -44,10 +44,10 @@ describe("2.1.3.1: When rejected, a promise: must not transition to any other st
         auto d = deferred();
         auto onRejectedCalled = false;
 
-        d.promise.then(delegate onFulfilled() {
+        d.promise.then(delegate /*onFulfilled*/() {
             assert_.strictEqual(onRejectedCalled, false);
             done();
-        }, delegate onRejected() {
+        }, delegate /*onRejected*/() {
             onRejectedCalled = true;
         });
 
@@ -62,10 +62,10 @@ describe("2.1.3.1: When rejected, a promise: must not transition to any other st
         auto d = deferred();
         auto onRejectedCalled = false;
 
-        d.promise.then(delegate onFulfilled() {
+        d.promise.then(delegate /*onFulfilled*/() {
             assert_.strictEqual(onRejectedCalled, false);
             done();
-        }, delegate onRejected() {
+        }, delegate /*onRejected*/() {
             onRejectedCalled = true;
         });
 
