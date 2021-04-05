@@ -5,6 +5,13 @@ import ae.utils.promise;
 struct adapter
 {
 static:
+	Promise!void resolved()
+	{
+		auto p = new Promise!void;
+		p.fulfill();
+		return p;
+	}
+
 	Promise!T resolved(T)(T value)
 	{
 		auto p = new Promise!T;
@@ -23,7 +30,10 @@ static:
 	{
 		Promise!T promise;
 
-		void resolve(T value) { promise.fulfill(value); }
+		static if (is(T == void))
+			void resolve() { promise.fulfill(); }
+		else
+			void resolve(T value) { promise.fulfill(value); }
 		void reject(E reason) { promise.reject(reason); }
 	}
 

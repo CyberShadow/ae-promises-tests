@@ -30,6 +30,14 @@ void describe(string what, void delegate() dg)
 	// writeln(indent, "> OK");
 }
 
+void specify(string name, void delegate() doIt)
+{
+	writeln(indent, "- ", name);
+	doIt();
+	socketManager.loop();
+	writeln(indent, "  OK");
+}
+
 void specify(string name, void delegate(void delegate() done) doIt)
 {
 	writeln(indent, "- ", name);

@@ -26,7 +26,7 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
 
             thenHasReturned = true;
         });
-        testRejected(dummy, (Promise!Dummy promise, void delegate() done) {
+        testRejected!Dummy(null, (Promise!Dummy promise, void delegate() done) {
             auto thenHasReturned = false;
 
             promise.then(null, delegate /*onRejected*/(error) {
@@ -81,11 +81,11 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
         });
 
         specify("when `onFulfilled` is added inside an `onRejected`", delegate (done) {
-            auto promise = rejected();
+            auto promise = rejected!void(null);
             auto promise2 = resolved();
             auto firstOnRejectedFinished = false;
 
-            promise.then(null, delegate () {
+            promise.then(null, delegate (error) {
                 promise2.then(delegate () {
                     assert_.strictEqual(firstOnRejectedFinished, true);
                     done();
@@ -103,7 +103,7 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
                 firstStackFinished = true;
             }, 0);
 
-            d.promise.then(delegate () {
+            d.promise.then(delegate (value) {
                 assert_.strictEqual(firstStackFinished, true);
                 done();
             });
@@ -141,11 +141,11 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
 
         specify("when `onRejected` is added inside an `onFulfilled`", delegate (done) {
             auto promise = resolved();
-            auto promise2 = rejected();
+            auto promise2 = rejected!void(null);
             auto firstOnFulfilledFinished = false;
 
             promise.then(delegate () {
-                promise2.then(null, delegate () {
+                promise2.then(null, delegate (error) {
                     assert_.strictEqual(firstOnFulfilledFinished, true);
                     done();
                 });
@@ -154,11 +154,11 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
         });
 
         specify("when one `onRejected` is added inside another `onRejected`", delegate (done) {
-            auto promise = rejected();
+            auto promise = rejected!void(null);
             auto firstOnRejectedFinished = false;
 
-            promise.then(null, delegate () {
-                promise.then(null, delegate () {
+            promise.then(null, delegate (error) {
+                promise.then(null, delegate (error) {
                     assert_.strictEqual(firstOnRejectedFinished, true);
                     done();
                 });
@@ -175,7 +175,7 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
                 firstStackFinished = true;
             }, 0);
 
-            d.promise.then(null, delegate () {
+            d.promise.then(null, delegate (error) {
                 assert_.strictEqual(firstStackFinished, true);
                 done();
             });

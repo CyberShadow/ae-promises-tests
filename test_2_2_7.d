@@ -43,7 +43,7 @@ describe("2.2.7: `then` must return a promise: `promise2 = promise1.then(onFulfi
                         done();
                     });
                 });
-                testRejected(dummy, delegate (promise1, done) {
+                testRejected!Dummy(/*dummy*/null, delegate (promise1, done) {
                     auto promise2 = promise1.then(null, delegate /*onRejected*/(error) {
                         throw expectedReason;
                     });

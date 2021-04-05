@@ -194,21 +194,21 @@ describe("2.2.6: `then` may be called multiple times on the same promise.", dele
             testRejected(sentinel, delegate (promise, done) {
                 auto semiDone = callbackAggregator(3, done);
 
-                promise.then(null, delegate () {
+                promise.then(null, delegate (error) {
                     return sentinel;
                 }).then(delegate (value) {
                     assert_.strictEqual(value, sentinel);
                     semiDone();
                 });
 
-                promise.then(null, delegate () {
+                promise.then(null, delegate (error) {
                     throw sentinel2;
                 }).then(null, delegate (reason) {
                     assert_.strictEqual(reason, sentinel2);
                     semiDone();
                 });
 
-                promise.then(null, delegate () {
+                promise.then(null, delegate (error) {
                     return sentinel3;
                 }).then(delegate (value) {
                     assert_.strictEqual(value, sentinel3);
@@ -218,7 +218,7 @@ describe("2.2.6: `then` may be called multiple times on the same promise.", dele
         });
 
         describe("`onRejected` handlers are called in the original order", delegate () {
-            testRejected(dummy, (Promise!Dummy promise, void delegate() done) {
+            testRejected!Dummy(/*dummy*/null, (Promise!Dummy promise, void delegate() done) {
                 auto handler1 = sinon.spy(delegate /*handler1*/() {});
                 auto handler2 = sinon.spy(delegate /*handler2*/() {});
                 auto handler3 = sinon.spy(delegate /*handler3*/() {});
@@ -227,25 +227,25 @@ describe("2.2.6: `then` may be called multiple times on the same promise.", dele
                 promise.then(null, handler2);
                 promise.then(null, handler3);
 
-                promise.then(null, delegate () {
+                promise.then(null, delegate (error) {
                     sinon.assert_.callOrder(handler1, handler2, handler3);
                     done();
                 });
             });
 
             describe("even when one handler is added inside another handler", delegate () {
-                testRejected(dummy, (Promise!Dummy promise, void delegate() done) {
+                testRejected!Dummy(/*dummy*/null, (Promise!Dummy promise, void delegate() done) {
                     auto handler1 = sinon.spy(delegate /*handler1*/() {});
                     auto handler2 = sinon.spy(delegate /*handler2*/() {});
                     auto handler3 = sinon.spy(delegate /*handler3*/() {});
 
-                    promise.then(null, delegate () {
+                    promise.then(null, delegate (error) {
                         handler1();
                         promise.then(null, handler3);
                     });
                     promise.then(null, handler2);
 
-                    promise.then(null, delegate () {
+                    promise.then(null, delegate (error) {
                         // Give implementations a bit of extra time to flush their internal queue, if necessary.
                         setTimeout(delegate () {
                             sinon.assert_.callOrder(handler1, handler2, handler3);
