@@ -1,5 +1,9 @@
 module test_2_3_1; unittest {
 
+import std.exception;
+
+import core.exception;
+
 import  helpers.d_shims;
 
 import helpers.d_shims;
@@ -12,26 +16,24 @@ struct Dummy { string dummy = "dummy"; } Dummy dummy; // we fulfill or reject wi
 
 describe("2.3.1: If `promise` and `x` refer to the same object, reject `promise` with a `TypeError' as the reason.",
          delegate () {
-    specify("via return from a fulfilled promise", delegate (done) {
-        auto promise = resolved(dummy).then(delegate () {
-            return promise;
-        });
+    auto e = collectException!Throwable(
+        specify("via return from a fulfilled promise", delegate () {
+            Promise!Dummy promise;
+            promise = resolved(dummy).then(delegate (Dummy value) {
+                return promise;
+            });
+        })
+    );
+    assert(cast(AssertError)e && e.msg == "Attempting to resolve a promise with itself");
 
-        promise.then(null, delegate (reason) {
-            assert(reason instanceof TypeError);
-            done();
-        });
-    });
-
-    specify("via return from a rejected promise", delegate (done) {
-        auto promise = rejected!Dummy(/*dummy*/null).then(null, delegate () {
-            return promise;
-        });
-
-        promise.then(null, delegate (reason) {
-            assert(reason instanceof TypeError);
-            done();
-        });
-    });
+    e = collectException!Throwable(
+        specify("via return from a rejected promise", delegate (done) {
+            Promise!Dummy promise;
+            promise = rejected!Dummy(/*dummy*/null).then(null, delegate (error) {
+                return promise;
+            });
+        })
+    );
+    assert(cast(AssertError)e && e.msg == "Attempting to resolve a promise with itself");
 });
 }
