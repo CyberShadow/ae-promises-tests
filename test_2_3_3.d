@@ -1,4 +1,4 @@
-module test_2_3_3; unittest {
+module test_2_3_3; version(none) unittest {
 
 import  helpers.d_shims;
 
@@ -16,7 +16,7 @@ struct Sentinel { string sentinel = "sentinel"; } Sentinel sentinel; // a sentin
 var other = { other: "other" }; // a value we don't want to be strict equal to
 var sentinelArray = [sentinel]; // a sentinel fulfillment value to test when we need an array
 
-delegate /*testPromiseResolution*/(xFactory, test) {
+auto testPromiseResolution(xFactory, test) {
     specify("via return from a fulfilled promise", delegate (done) {
         auto promise = resolved(dummy).then(delegate /*onBasePromiseFulfilled*/() {
             return xFactory();
@@ -34,12 +34,12 @@ delegate /*testPromiseResolution*/(xFactory, test) {
     });
 }
 
-delegate /*testCallingResolvePromise*/(yFactory, stringRepresentation, test) {
+auto testCallingResolvePromise(yFactory, stringRepresentation, test) {
     describe("`y` is " ~ stringRepresentation, delegate () {
         describe("`then` calls `resolvePromise` synchronously", delegate () {
             auto xFactory() {
-                return {
-                    then: delegate (resolvePromise) {
+                return new class Object {
+                    void then(P)(resolvePromise) {
                         resolvePromise(yFactory());
                     }
                 };
@@ -50,8 +50,8 @@ delegate /*testCallingResolvePromise*/(yFactory, stringRepresentation, test) {
 
         describe("`then` calls `resolvePromise` asynchronously", delegate () {
             auto xFactory() {
-                return {
-                    then: delegate (resolvePromise) {
+                return new class Object {
+                    void then(P)(resolvePromise) {
                         setTimeout(delegate () {
                             resolvePromise(yFactory());
                         }, 0);
@@ -64,12 +64,12 @@ delegate /*testCallingResolvePromise*/(yFactory, stringRepresentation, test) {
     });
 }
 
-delegate /*testCallingRejectPromise*/(r, stringRepresentation, test) {
+auto testCallingRejectPromise(r, stringRepresentation, test) {
     describe("`r` is " ~ stringRepresentation, delegate () {
         describe("`then` calls `rejectPromise` synchronously", delegate () {
             auto xFactory() {
-                return {
-                    then: delegate (resolvePromise, rejectPromise) {
+                return new class Object {
+                    void then(S, J)(S resolvePromise, J rejectPromise) {
                         rejectPromise(r);
                     }
                 };
@@ -80,8 +80,8 @@ delegate /*testCallingRejectPromise*/(r, stringRepresentation, test) {
 
         describe("`then` calls `rejectPromise` asynchronously", delegate () {
             auto xFactory() {
-                return {
-                    then: delegate (resolvePromise, rejectPromise) {
+                return new class Object {
+                    void then(S, J)(resolvePromise, rejectPromise) {
                         setTimeout(delegate () {
                             rejectPromise(r);
                         }, 0);
@@ -94,7 +94,7 @@ delegate /*testCallingRejectPromise*/(r, stringRepresentation, test) {
     });
 }
 
-delegate /*testCallingResolvePromiseFulfillsWith*/(yFactory, stringRepresentation, fulfillmentValue) {
+auto testCallingResolvePromiseFulfillsWith(yFactory, stringRepresentation, fulfillmentValue) {
     testCallingResolvePromise(yFactory, stringRepresentation, delegate (promise, done) {
         promise.then(delegate /*onPromiseFulfilled*/(value) {
             assert_.strictEqual(value, fulfillmentValue);
@@ -103,7 +103,7 @@ delegate /*testCallingResolvePromiseFulfillsWith*/(yFactory, stringRepresentatio
     });
 }
 
-delegate /*testCallingResolvePromiseRejectsWith*/(yFactory, stringRepresentation, rejectionReason) {
+auto testCallingResolvePromiseRejectsWith(yFactory, stringRepresentation, rejectionReason) {
     testCallingResolvePromise(yFactory, stringRepresentation, delegate (promise, done) {
         promise.then(null, delegate /*onPromiseRejected*/(reason) {
             assert_.strictEqual(reason, rejectionReason);
@@ -112,7 +112,7 @@ delegate /*testCallingResolvePromiseRejectsWith*/(yFactory, stringRepresentation
     });
 }
 
-delegate /*testCallingRejectPromiseRejectsWith*/(reason, stringRepresentation) {
+auto testCallingRejectPromiseRejectsWith(reason, stringRepresentation) {
     testCallingRejectPromise(reason, stringRepresentation, delegate (promise, done) {
         promise.then(null, delegate /*onPromiseRejected*/(rejectionReason) {
             assert_.strictEqual(rejectionReason, reason);
@@ -131,7 +131,7 @@ describe("2.3.3: Otherwise, if `x` is an object or delegate,", delegate () {
             });
 
             auto xFactory() {
-                return Object.create(null, {
+                return new class Object {
                     then: {
                         get: delegate () {
                             ++numberOfTimesThenWasRetrieved;
