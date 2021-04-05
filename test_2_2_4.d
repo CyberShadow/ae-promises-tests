@@ -29,7 +29,7 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
         testRejected(dummy, (Promise!Dummy promise, void delegate() done) {
             auto thenHasReturned = false;
 
-            promise.then(null, delegate /*onRejected*/() {
+            promise.then(null, delegate /*onRejected*/(error) {
                 assert_.strictEqual(thenHasReturned, true);
                 done();
             });
@@ -116,11 +116,11 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
             auto d = deferred!Dummy();
             auto onRejectedCalled = false;
 
-            d.promise.then(null, delegate /*onRejected*/() {
+            d.promise.then(null, delegate /*onRejected*/(error) {
                 onRejectedCalled = true;
             });
 
-            d.reject(dummy);
+            d.reject(/*dummy*/null);
 
             assert_.strictEqual(onRejectedCalled, false);
         });
@@ -130,9 +130,9 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
             auto d = deferred!Dummy();
             auto onRejectedCalled = false;
 
-            d.reject(dummy);
+            d.reject(/*dummy*/null);
 
-            d.promise.then(null, delegate /*onRejected*/() {
+            d.promise.then(null, delegate /*onRejected*/(error) {
                 onRejectedCalled = true;
             });
 
@@ -171,7 +171,7 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
             auto firstStackFinished = false;
 
             setTimeout(delegate () {
-                d.reject(dummy);
+                d.reject(/*dummy*/null);
                 firstStackFinished = true;
             }, 0);
 

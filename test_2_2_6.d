@@ -9,7 +9,7 @@ import helpers.testThreeCases : testRejected;
 
 struct Dummy { string dummy = "dummy"; } Dummy dummy; // we fulfill or reject with this when we don't intend to test against it
 var other = { other: "other" }; // a value we don't want to be strict equal to
-var sentinel = { sentinel: "sentinel" }; // a sentinel fulfillment value to test for with strict equality
+struct Sentinel { string sentinel = "sentinel"; } Sentinel sentinel; // a sentinel fulfillment value to test for with strict equality
 var sentinel2 = { sentinel2: "sentinel2" };
 var sentinel3 = { sentinel3: "sentinel3" };
 

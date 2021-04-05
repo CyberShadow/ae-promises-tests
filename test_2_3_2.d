@@ -10,7 +10,7 @@ alias rejected = adapter.rejected;
 alias deferred = adapter.deferred;
 
 struct Dummy { string dummy = "dummy"; } Dummy dummy; // we fulfill or reject with this when we don't intend to test against it
-var sentinel = { sentinel: "sentinel" }; // a sentinel fulfillment value to test for with strict equality
+struct Sentinel { string sentinel = "sentinel"; } Sentinel sentinel; // a sentinel fulfillment value to test for with strict equality
 
 delegate /*testPromiseResolution*/(xFactory, test) {
     specify("via return from a fulfilled promise", delegate (done) {
@@ -22,7 +22,7 @@ delegate /*testPromiseResolution*/(xFactory, test) {
     });
 
     specify("via return from a rejected promise", delegate (done) {
-        auto promise = rejected(dummy).then(null, delegate /*onBasePromiseRejected*/() {
+        auto promise = rejected!Dummy(/*dummy*/null).then(null, delegate /*onBasePromiseRejected*/() {
             return xFactory();
         });
 

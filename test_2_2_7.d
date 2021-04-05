@@ -11,7 +11,7 @@ import helpers.d_adapter;
 alias deferred = adapter.deferred;
 
 struct Dummy { string dummy = "dummy"; } Dummy dummy; // we fulfill or reject with this when we don't intend to test against it
-var sentinel = { sentinel: "sentinel" }; // a sentinel fulfillment value to test for with strict equality
+struct Sentinel { string sentinel = "sentinel"; } Sentinel sentinel; // a sentinel fulfillment value to test for with strict equality
 var other = { other: "other" }; // a value we don't want to be strict equal to
 
 describe("2.2.7: `then` must return a promise: `promise2 = promise1.then(onFulfilled, onRejected)`", delegate () {
@@ -44,7 +44,7 @@ describe("2.2.7: `then` must return a promise: `promise2 = promise1.then(onFulfi
                     });
                 });
                 testRejected(dummy, delegate (promise1, done) {
-                    auto promise2 = promise1.then(null, delegate /*onRejected*/() {
+                    auto promise2 = promise1.then(null, delegate /*onRejected*/(error) {
                         throw expectedReason;
                     });
 

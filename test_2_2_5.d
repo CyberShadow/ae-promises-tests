@@ -22,7 +22,7 @@ describe("2.2.5 `onFulfilled` and `onRejected` must be called as delegates (i.e.
         });
 
         specify("rejected", delegate (done) {
-            rejected(dummy).then(null, delegate /*onRejected*/() {
+            rejected!Dummy(/*dummy*/null).then(null, delegate /*onRejected*/(error) {
                 import  helpers.d_shims;
 
                 assert_.strictEqual(this, undefined);
@@ -40,7 +40,7 @@ describe("2.2.5 `onFulfilled` and `onRejected` must be called as delegates (i.e.
         });
 
         specify("rejected", delegate (done) {
-            rejected(dummy).then(null, delegate /*onRejected*/() {
+            rejected!Dummy(/*dummy*/null).then(null, delegate /*onRejected*/(error) {
                 assert_.strictEqual(this, global);
                 done();
             });

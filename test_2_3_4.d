@@ -29,7 +29,7 @@ describe("2.3.4: If `x` is not an object or delegate, fulfill `promise` with `x`
                 });
             });
             testRejected(dummy, delegate (promise1, done) {
-                auto promise2 = promise1.then(null, delegate /*onRejected*/() {
+                auto promise2 = promise1.then(null, delegate /*onRejected*/(error) {
                     return expectedValue;
                 });
 

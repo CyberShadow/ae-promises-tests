@@ -24,7 +24,7 @@ describe("2.3.1: If `promise` and `x` refer to the same object, reject `promise`
     });
 
     specify("via return from a rejected promise", delegate (done) {
-        auto promise = rejected(dummy).then(null, delegate () {
+        auto promise = rejected!Dummy(/*dummy*/null).then(null, delegate () {
             return promise;
         });
 
