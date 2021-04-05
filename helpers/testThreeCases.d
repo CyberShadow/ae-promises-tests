@@ -1,7 +1,7 @@
 module helpers.testThreeCases;
 
 import helpers.d_shims;
-import ae.utils.promise_;
+import ae.utils.promise;
 
 import helpers.d_adapter;
 alias resolved = adapter.resolved;
@@ -29,20 +29,20 @@ void testFulfilled(T)(T value, void delegate(Promise!T, void delegate() done) te
 }
 
 void testRejected(T)(Exception reason, void delegate(Promise!T, void delegate() done) test) {
-    specify("already-rejected", function (done) {
+    specify("already-rejected", /* function */ (done) {
         test(rejected!T(reason), done);
     });
 
-    specify("immediately-rejected", function (done) {
+    specify("immediately-rejected", /* function */ (done) {
         auto d = deferred!T();
         test(d.promise, done);
         d.reject(reason);
     });
 
-    specify("eventually-rejected", function (done) {
+    specify("eventually-rejected", /* function */ (done) {
         auto d = deferred!T();
         test(d.promise, done);
-        setTimeout(function () {
+        setTimeout(/* function */ () {
             d.reject(reason);
         }, 50);
     });

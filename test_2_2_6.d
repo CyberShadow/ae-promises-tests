@@ -1,11 +1,11 @@
 module test_2_2_6; unittest {
 
-// "use strict";
+import  helpers.d_shims;
 
 import helpers.d_shims;
 var sinon = require("sinon");
 import helpers.testThreeCases : testFulfilled;
-var testRejected = require("./helpers/testThreeCases").testRejected;
+import helpers.testThreeCases : testRejected;
 
 struct Dummy { string dummy = "dummy"; } Dummy dummy; // we fulfill or reject with this when we don't intend to test against it
 var other = { other: "other" }; // a value we don't want to be strict equal to
@@ -23,7 +23,7 @@ delegate /*callbackAggregator*/(times, ultimateCallback) {
 }
 
 describe("2.2.6: `then` may be called multiple times on the same promise.", delegate () {
-    describe("2.2.6.1: If/when `promise` is fulfilled, all respective `onFulfilled` callbacks must execute in the " +
+    describe("2.2.6.1: If/when `promise` is fulfilled, all respective `onFulfilled` callbacks must execute in the " ~
              "order of their originating calls to `then`.", delegate () {
         describe("multiple boring fulfillment handlers", delegate () {
             testFulfilled(sentinel, delegate (promise, done) {
@@ -140,7 +140,7 @@ describe("2.2.6: `then` may be called multiple times on the same promise.", dele
         });
     });
 
-    describe("2.2.6.2: If/when `promise` is rejected, all respective `onRejected` callbacks must execute in the " +
+    describe("2.2.6.2: If/when `promise` is rejected, all respective `onRejected` callbacks must execute in the " ~
              "order of their originating calls to `then`.", delegate () {
         describe("multiple boring rejection handlers", delegate () {
             testRejected(sentinel, delegate (promise, done) {

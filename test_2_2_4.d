@@ -1,25 +1,25 @@
 module test_2_2_4; unittest {
 
-// "use strict";
+import  helpers.d_shims;
 
 import helpers.d_shims;
 import helpers.testThreeCases : testFulfilled;
-var testRejected = require("./helpers/testThreeCases").testRejected;
+import helpers.testThreeCases : testRejected;
 
 import helpers.d_adapter;
-var resolved = adapter.resolved;
-var rejected = adapter.rejected;
+alias resolved = adapter.resolved;
+alias rejected = adapter.rejected;
 alias deferred = adapter.deferred;
 
 struct Dummy { string dummy = "dummy"; } Dummy dummy; // we fulfill or reject with this when we don't intend to test against it
 
-describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the execution context stack contains only " +
+describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the execution context stack contains only " ~
          "platform code.", delegate () {
     describe("`then` returns before the promise becomes fulfilled or rejected", delegate () {
         testFulfilled(dummy, (Promise!Dummy promise, void delegate() done) {
             auto thenHasReturned = false;
 
-            promise.then(delegate /*onFulfilled*/() {
+            promise.then(delegate /*onFulfilled*/(value) {
                 assert_.strictEqual(thenHasReturned, true);
                 done();
             });
@@ -41,10 +41,10 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
     describe("Clean-stack execution ordering tests (fulfillment case)", delegate () {
         specify("when `onFulfilled` is added immediately before the promise is fulfilled",
                 delegate () {
-            auto d = deferred();
+            auto d = deferred!Dummy();
             auto onFulfilledCalled = false;
 
-            d.promise.then(delegate /*onFulfilled*/() {
+            d.promise.then(delegate /*onFulfilled*/(value) {
                 onFulfilledCalled = true;
             });
 
@@ -55,12 +55,12 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
 
         specify("when `onFulfilled` is added immediately after the promise is fulfilled",
                 delegate () {
-            auto d = deferred();
+            auto d = deferred!Dummy();
             auto onFulfilledCalled = false;
 
             d.resolve(dummy);
 
-            d.promise.then(delegate /*onFulfilled*/() {
+            d.promise.then(delegate /*onFulfilled*/(value) {
                 onFulfilledCalled = true;
             });
 
@@ -95,7 +95,7 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
         });
 
         specify("when the promise is fulfilled asynchronously", delegate (done) {
-            auto d = deferred();
+            auto d = deferred!Dummy();
             auto firstStackFinished = false;
 
             setTimeout(delegate () {
@@ -113,7 +113,7 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
     describe("Clean-stack execution ordering tests (rejection case)", delegate () {
         specify("when `onRejected` is added immediately before the promise is rejected",
                 delegate () {
-            auto d = deferred();
+            auto d = deferred!Dummy();
             auto onRejectedCalled = false;
 
             d.promise.then(null, delegate /*onRejected*/() {
@@ -127,7 +127,7 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
 
         specify("when `onRejected` is added immediately after the promise is rejected",
                 delegate () {
-            auto d = deferred();
+            auto d = deferred!Dummy();
             auto onRejectedCalled = false;
 
             d.reject(dummy);
@@ -167,7 +167,7 @@ describe("2.2.4: `onFulfilled` or `onRejected` must not be called until the exec
         });
 
         specify("when the promise is rejected asynchronously", delegate (done) {
-            auto d = deferred();
+            auto d = deferred!Dummy();
             auto firstStackFinished = false;
 
             setTimeout(delegate () {

@@ -1,12 +1,12 @@
 module test_2_3_2; unittest {
 
-// "use strict";
+import  helpers.d_shims;
 
 import helpers.d_shims;
 
 import helpers.d_adapter;
-var resolved = adapter.resolved;
-var rejected = adapter.rejected;
+alias resolved = adapter.resolved;
+alias rejected = adapter.rejected;
 alias deferred = adapter.deferred;
 
 struct Dummy { string dummy = "dummy"; } Dummy dummy; // we fulfill or reject with this when we don't intend to test against it
@@ -33,7 +33,7 @@ delegate /*testPromiseResolution*/(xFactory, test) {
 describe("2.3.2: If `x` is a promise, adopt its state", delegate () {
     describe("2.3.2.1: If `x` is pending, `promise` must remain pending until `x` is fulfilled or rejected.",
              delegate () {
-        delegate /*xFactory*/() {
+        auto xFactory() {
             return deferred().promise;
         }
 
@@ -42,10 +42,10 @@ describe("2.3.2: If `x` is a promise, adopt its state", delegate () {
             auto wasRejected = false;
 
             promise.then(
-                delegate /*onPromiseFulfilled*/() {
+                auto onPromiseFulfilled() {
                     wasFulfilled = true;
                 },
-                delegate /*onPromiseRejected*/() {
+                auto onPromiseRejected() {
                     wasRejected = true;
                 }
             );
@@ -60,7 +60,7 @@ describe("2.3.2: If `x` is a promise, adopt its state", delegate () {
 
     describe("2.3.2.2: If/when `x` is fulfilled, fulfill `promise` with the same value.", delegate () {
         describe("`x` is already-fulfilled", delegate () {
-            delegate /*xFactory*/() {
+            auto xFactory() {
                 return resolved(sentinel);
             }
 
@@ -75,8 +75,8 @@ describe("2.3.2: If `x` is a promise, adopt its state", delegate () {
         describe("`x` is eventually-fulfilled", delegate () {
             auto d = null;
 
-            delegate /*xFactory*/() {
-                d = deferred();
+            auto xFactory() {
+                d = deferred!Dummy();
                 setTimeout(delegate () {
                     d.resolve(sentinel);
                 }, 50);
@@ -94,7 +94,7 @@ describe("2.3.2: If `x` is a promise, adopt its state", delegate () {
 
     describe("2.3.2.3: If/when `x` is rejected, reject `promise` with the same reason.", delegate () {
         describe("`x` is already-rejected", delegate () {
-            delegate /*xFactory*/() {
+            auto xFactory() {
                 return rejected(sentinel);
             }
 
@@ -109,8 +109,8 @@ describe("2.3.2: If `x` is a promise, adopt its state", delegate () {
         describe("`x` is eventually-rejected", delegate () {
             auto d = null;
 
-            delegate /*xFactory*/() {
-                d = deferred();
+            auto xFactory() {
+                d = deferred!Dummy();
                 setTimeout(delegate () {
                     d.reject(sentinel);
                 }, 50);

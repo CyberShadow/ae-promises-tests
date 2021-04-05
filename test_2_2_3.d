@@ -1,19 +1,19 @@
 module test_2_2_3; unittest {
 
-// "use strict";
+import  helpers.d_shims;
 
 import helpers.d_shims;
-var testRejected = require("./helpers/testThreeCases").testRejected;
+import helpers.testThreeCases : testRejected;
 
 import helpers.d_adapter;
-var rejected = adapter.rejected;
+alias rejected = adapter.rejected;
 alias deferred = adapter.deferred;
 
 struct Dummy { string dummy = "dummy"; } Dummy dummy; // we fulfill or reject with this when we don't intend to test against it
 var sentinel = { sentinel: "sentinel" }; // a sentinel fulfillment value to test for with strict equality
 
 describe("2.2.3: If `onRejected` is a delegate,", delegate () {
-    describe("2.2.3.1: it must be called after `promise` is rejected, with `promise`’s rejection reason as its " +
+    describe("2.2.3.1: it must be called after `promise` is rejected, with `promise`’s rejection reason as its " ~
              "first argument.", delegate () {
         testRejected(sentinel, delegate (promise, done) {
             promise.then(null, delegate /*onRejected*/(reason) {
@@ -25,7 +25,7 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
 
     describe("2.2.3.2: it must not be called before `promise` is rejected", delegate () {
         specify("rejected after a delay", delegate (done) {
-            auto d = deferred();
+            auto d = deferred!Dummy();
             auto isRejected = false;
 
             d.promise.then(null, delegate /*onRejected*/() {
@@ -40,7 +40,7 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
         });
 
         specify("never rejected", delegate (done) {
-            auto d = deferred();
+            auto d = deferred!Dummy();
             auto onRejectedCalled = false;
 
             d.promise.then(null, delegate /*onRejected*/() {
@@ -66,7 +66,7 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
         });
 
         specify("trying to reject a pending promise more than once, immediately", delegate (done) {
-            auto d = deferred();
+            auto d = deferred!Dummy();
             auto timesCalled = 0;
 
             d.promise.then(null, delegate /*onRejected*/() {
@@ -79,7 +79,7 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
         });
 
         specify("trying to reject a pending promise more than once, delayed", delegate (done) {
-            auto d = deferred();
+            auto d = deferred!Dummy();
             auto timesCalled = 0;
 
             d.promise.then(null, delegate /*onRejected*/() {
@@ -94,7 +94,7 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
         });
 
         specify("trying to reject a pending promise more than once, immediately then delayed", delegate (done) {
-            auto d = deferred();
+            auto d = deferred!Dummy();
             auto timesCalled = 0;
 
             d.promise.then(null, delegate /*onRejected*/() {
@@ -109,7 +109,7 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
         });
 
         specify("when multiple `then` calls are made, spaced apart in time", delegate (done) {
-            auto d = deferred();
+            auto d = deferred!Dummy();
             auto timesCalled = [0, 0, 0];
 
             d.promise.then(null, delegate /*onRejected*/() {
@@ -135,7 +135,7 @@ describe("2.2.3: If `onRejected` is a delegate,", delegate () {
         });
 
         specify("when `then` is interleaved with rejection", delegate (done) {
-            auto d = deferred();
+            auto d = deferred!Dummy();
             auto timesCalled = [0, 0];
 
             d.promise.then(null, delegate /*onRejected*/() {

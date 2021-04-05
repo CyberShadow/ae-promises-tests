@@ -1,12 +1,12 @@
 module test_2_3_1; unittest {
 
-// "use strict";
+import  helpers.d_shims;
 
 import helpers.d_shims;
 
 import helpers.d_adapter;
-var resolved = adapter.resolved;
-var rejected = adapter.rejected;
+alias resolved = adapter.resolved;
+alias rejected = adapter.rejected;
 
 struct Dummy { string dummy = "dummy"; } Dummy dummy; // we fulfill or reject with this when we don't intend to test against it
 

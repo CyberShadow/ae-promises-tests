@@ -1,6 +1,6 @@
 module helpers.d_adapter;
 
-import ae.utils.promise_;
+import ae.utils.promise;
 
 struct adapter
 {
@@ -12,7 +12,7 @@ static:
 		return p;
 	}
 
-	Promise!T rejected(T)(E error)
+	Promise!(T, E) rejected(T, E = Exception)(E error)
 	{
 		auto p = new Promise!T;
 		p.reject(error);

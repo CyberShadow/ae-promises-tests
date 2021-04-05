@@ -1,10 +1,10 @@
 module test_2_2_7; unittest {
 
-// "use strict";
+import  helpers.d_shims;
 
 import helpers.d_shims;
 import helpers.testThreeCases : testFulfilled;
-var testRejected = require("./helpers/testThreeCases").testRejected;
+import helpers.testThreeCases : testRejected;
 var reasons = require("./helpers/reasons");
 
 import helpers.d_adapter;
@@ -24,17 +24,17 @@ describe("2.2.7: `then` must return a promise: `promise2 = promise1.then(onFulfi
         assert_.strictEqual(typeof promise2.then, "delegate");
     });
 
-    describe("2.2.7.1: If either `onFulfilled` or `onRejected` returns a value `x`, run the Promise Resolution " +
+    describe("2.2.7.1: If either `onFulfilled` or `onRejected` returns a value `x`, run the Promise Resolution " ~
              "Procedure `[[Resolve]](promise2, x)`", delegate () {
         specify("see separate 3.3 tests", delegate () { });
     });
 
-    describe("2.2.7.2: If either `onFulfilled` or `onRejected` throws an exception `e`, `promise2` must be rejected " +
+    describe("2.2.7.2: If either `onFulfilled` or `onRejected` throws an exception `e`, `promise2` must be rejected " ~
              "with `e` as the reason.", delegate () {
-        delegate /*testReason*/(expectedReason, stringRepresentation) {
-            describe("The reason is " + stringRepresentation, delegate () {
+        auto testReason(expectedReason, stringRepresentation) {
+            describe("The reason is " ~ stringRepresentation, delegate () {
                 testFulfilled(dummy, delegate (promise1, done) {
-                    auto promise2 = promise1.then(delegate /*onFulfilled*/() {
+                    auto promise2 = promise1.then(delegate /*onFulfilled*/(value) {
                         throw expectedReason;
                     });
 
@@ -61,11 +61,11 @@ describe("2.2.7: `then` must return a promise: `promise2 = promise1.then(onFulfi
         });
     });
 
-    describe("2.2.7.3: If `onFulfilled` is not a delegate and `promise1` is fulfilled, `promise2` must be fulfilled " +
+    describe("2.2.7.3: If `onFulfilled` is not a delegate and `promise1` is fulfilled, `promise2` must be fulfilled " ~
              "with the same value.", delegate () {
 
-        delegate /*testNonFunction*/(nonFunction, stringRepresentation) {
-            describe("`onFulfilled` is " + stringRepresentation, delegate () {
+        auto testNonFunction(T)(T nonFunction, string stringRepresentation) {
+            describe("`onFulfilled` is " ~ stringRepresentation, delegate () {
                 testFulfilled(sentinel, delegate (promise1, done) {
                     auto promise2 = promise1.then(nonFunction);
 
@@ -85,11 +85,11 @@ describe("2.2.7: `then` must return a promise: `promise2 = promise1.then(onFulfi
         testNonFunction([delegate () { return other; }], "an array containing a delegate");
     });
 
-    describe("2.2.7.4: If `onRejected` is not a delegate and `promise1` is rejected, `promise2` must be rejected " +
+    describe("2.2.7.4: If `onRejected` is not a delegate and `promise1` is rejected, `promise2` must be rejected " ~
              "with the same reason.", delegate () {
 
-        delegate /*testNonFunction*/(nonFunction, stringRepresentation) {
-            describe("`onRejected` is " + stringRepresentation, delegate () {
+        auto testNonFunction(T)(T nonFunction, string stringRepresentation) {
+            describe("`onRejected` is " ~ stringRepresentation, delegate () {
                 testRejected(sentinel, delegate (promise1, done) {
                     auto promise2 = promise1.then(null, nonFunction);
 
