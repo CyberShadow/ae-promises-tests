@@ -4,6 +4,7 @@ public import ae.utils.promise : Promise;
 
 // node.js --------------------------------------------------------------------
 
+import core.memory;
 import core.time;
 import ae.net.asockets;
 import ae.sys.timing;
@@ -36,6 +37,7 @@ void specify(string name, void delegate() doIt)
 	writeln(indent, "- ", name);
 	doIt();
 	socketManager.loop();
+	GC.collect();
 	writeln(indent, "  OK");
 }
 
@@ -51,6 +53,7 @@ void specify(string name, void delegate(void delegate() done) doIt)
 	});
 
 	socketManager.loop();
+	GC.collect();
 
 	assert(isDone, "done() not called");
 
